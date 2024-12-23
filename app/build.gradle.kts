@@ -49,6 +49,7 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
+
     // Library lifecycle untuk navigation drawer
     implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.5.1")
     implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1")
@@ -64,6 +65,7 @@ dependencies {
     implementation ("androidx.appcompat:appcompat:1.6.1")
 
     implementation ("com.airbnb.android:lottie:5.2.0")
+
     //lib untuk request API
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")

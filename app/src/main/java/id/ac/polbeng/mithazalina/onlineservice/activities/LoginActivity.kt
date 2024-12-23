@@ -1,6 +1,5 @@
 package id.ac.polbeng.mithazalina.onlineservice.activities
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
@@ -8,6 +7,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import id.ac.polbeng.mithazalina.onlineservice.databinding.ActivityLoginBinding
+import id.ac.polbeng.mithazalina.onlineservice.helpers.SessionHandler
 import id.ac.polbeng.mithazalina.onlineservice.models.LoginResponse
 import id.ac.polbeng.mithazalina.onlineservice.models.User
 import id.ac.polbeng.mithazalina.onlineservice.services.ServiceBuilder
@@ -24,18 +24,29 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.tvDaftar.setOnClickListener {
+            val intent = Intent(applicationContext,
+                RegisterActivity::class.java)
+            startActivity(intent)
+        }
+
+        val session = SessionHandler(applicationContext)
+        if(session.isLoggedIn()){
+            loadMainActivity()
+        }
+
         binding.btnLogin.setOnClickListener {
+
             val email = binding.etEmail.text.toString()
             val password = binding.etPassword.text.toString()
-
-            if (TextUtils.isEmpty(email)) {
+            if(TextUtils.isEmpty(email)){
                 binding.etEmail.error = "Email tidak boleh kosong!"
                 binding.etEmail.requestFocus()
                 return@setOnClickListener
             }
 
-            if (TextUtils.isEmpty(password)) {
-                binding.etPassword.error = "Password tidak boleh kosong!"
+            if(TextUtils.isEmpty(password)){
+                binding.etPassword.error = "Password tidak bolehkosong!"
                 binding.etPassword.requestFocus()
                 return@setOnClickListener
             }
@@ -43,54 +54,35 @@ class LoginActivity : AppCompatActivity() {
             val filter = HashMap<String, String>()
             filter["email"] = email
             filter["password"] = password
-
             val userService: UserService = ServiceBuilder.buildService(UserService::class.java)
             val requestCall: Call<LoginResponse> = userService.loginUser(filter)
-
             showLoading(true)
-
-            requestCall.enqueue(object : retrofit2.Callback<LoginResponse> {
-                override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+            requestCall.enqueue(object :
+                retrofit2.Callback<LoginResponse>{
+                override fun onFailure(call: Call<LoginResponse>, t:
+                Throwable) {
                     showLoading(false)
-                    Toast.makeText(
-                        this@LoginActivity,
-                        "Error terjadi ketika sedang login: " + t.toString(),
-                        Toast.LENGTH_LONG
-                    ).show()
+                    Toast.makeText(this@LoginActivity, "Error terjadi ketika sedang login: " + t.toString(), Toast.LENGTH_LONG).show()
                 }
-
                 override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
                     showLoading(false)
-                    if (response.body()?.error == false) {
-                        val loginResponse: LoginResponse? = response.body()
+                    if(!response.body()?.error!!) {
+                        val loginResponse: LoginResponse? =
+                            response.body()
                         loginResponse?.let {
                             val user: User = loginResponse.data
-                            saveUserToSession(user) // Simpan user ke session
-                            Toast.makeText(
-                                this@LoginActivity,
+                            session.saveUser(user)
+                            Toast.makeText(this@LoginActivity,
                                 "Pengguna ${user.nama} dengan email ${user.email} berhasil login!",
-                                Toast.LENGTH_LONG
-                            ).show()
+                                Toast.LENGTH_LONG).show()
                             loadMainActivity()
                         }
-                    } else {
-                        Toast.makeText(
-                            this@LoginActivity,
-                            "Gagal login: " + response.body()?.message,
-                            Toast.LENGTH_LONG
-                        ).show()
+                    }else{
+                        Toast.makeText(this@LoginActivity, "Gagal login: " + response.body()?.message, Toast.LENGTH_LONG).show()
                     }
                 }
             })
         }
-    }
-
-    private fun saveUserToSession(user: User) {
-        val sharedPreferences = getSharedPreferences("user_session", Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        editor.putString("nama", user.nama)
-        editor.putString("email", user.email)
-        editor.apply()
     }
 
     private fun loadMainActivity() {

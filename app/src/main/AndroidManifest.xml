@@ -14,27 +14,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.OnlineService"
         tools:targetApi="31">
-<!--        <activity-->
-<!--            android:name=".activities.EditProfileActivity"-->
-<!--            android:exported="false"-->
-<!--            android:label="@string/ubah_profile"-->
-<!--            android:parentActivityName=".activities.MainActivity"/>-->
-<!--        <meta-data-->
-<!--            android:name="android.app.lib_name"-->
-<!--            android:value="" />-->
-<!--        <activity-->
-<!--            android:name=".activities.RegisterActivity"-->
-<!--            android:exported="true"-->
-<!--            android:label="@string/daftar"-->
-<!--            android:parentActivityName=".activities.LoginActivity" />-->
-
-        <meta-data
-            android:name="android.app.lib_name"
-            android:value="" />
-
+        <activity
+            android:name=".activities.EditProfileActivity"
+            android:exported="false"
+            android:label="@string/ubah_profile"
+            android:parentActivityName=".activities.MainActivity">
+         <meta-data
+         android:name="android.app.lib_name"
+         android:value="" />
+        </activity>
         <activity
             android:name=".activities.LoginActivity"
-            android:exported="false"
+            android:exported="true"
             android:theme="@style/Theme.OnlineService.NoActionBar" />
 
         <meta-data
@@ -61,6 +52,15 @@
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.OnlineService.NoActionBar">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".activities.RegisterActivity"
+            android:exported="false"
+            android:label="@string/daftar"
+            android:parentActivityName=".activities.LoginActivity">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
